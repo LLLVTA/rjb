@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>function</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- <link rel="stylesheet" href="./css/matrix-style.css"> -->
+    <link rel="stylesheet" href="../static/CSS/style.css"/>
+    <script src="../static/js/index.js"></script>
+
+    <!-- 新 Bootstrap5 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+          integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+    <!-- 上传文件 -->
+    <link rel="stylesheet" href="../static/src/css/layui.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      function handleFormSubmit(event) {
+        event.preventDefault();
+
+        // 获取文件上传表单和按钮元素
+        const form = document.getElementById('file-upload-form');
+        const button = document.getElementById('my-button');
+
+        // 发送 AJAX 请求
+        axios.post('/function', new FormData(form))
+          .then(response => {
+            // 如果后端返回了 JSON 数据，显示按钮
+            const data = response.data;
+            if (data) {
+              console.log('Button should be visible');
+              button.style.display = 'block';
+            } else {
+              console.log('Button should be hidden');
+              button.style.display = 'none';
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    </script>
+
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 80px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            z-index: 99;
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                top: 11.5rem;
+                padding: 0;
+            }
+        }
+
+        .navbar {
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .1);
+        }
+
+        @media (min-width: 767.98px) {
+            .navbar {
+                top: 0;
+                position: sticky;
+                z-index: 999;
+            }
+        }
+
+        .sidebar .nav-link {
+            color: black;
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: black;
+        }
+
+        .ml-2 {
+            font-size: 20px;
+
+        }
+
+        #confusion-matrix-container {
+            width: 80%;
+            margin: 0 auto;
+            border: 0px solid black;
+            padding: 10px;
+            background-color: white;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ededed;
+            padding: 20px;
+            text-align: center;
+        }
+
+        th {
+            font-weight: bold;
+            background-color: #d3d3d3;
+        }
+    </style>
+</head>
+
+<body style="overflow-x:hidden">
+<!-- 网页头部 -->
+<header style="background-color: black;height: 90px">
+    <a href="index.html" style="text-decoration: none;width: 148px">
+        <div class="logo">
+            <img src="../static/logo/logo.png" style="width: 130%">
+        </div>
+    </a>
+</header>
+<form action="/function" method="POST" enctype="multipart/form-data" id="file-upload-form" onsubmit="handleFormSubmit(event)">
+    <div class="container-fluid">
+        <div class="row" style="margin-left: 250px">
+            <div class="col-md-9 col-lg-10 px-md-4 py-4" style="margin-left: 5px">
+                <h1 class="h2">Step1 上传文件</h1>
+                <br>
+
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn layui-btn-normal" id="testList"
+                            enctype='multipart/form-data'>选择csv文件
+                    </button>
+                    <input class="layui-upload-file" type="file" accept="" name="csvfile" multiple="">
+                    <div class="layui-upload-list">
+                        <table class="layui-table">
+                            <thead>
+                            <th>文件名</th>
+                            <th>大小</th>
+                            <th>上传进度</th>
+                            <th>操作</th>
+                            </thead>
+                            <tbody id="demoList"></tbody>
+                        </table>
+                    </div>
+                    <button type="submit" class="layui-btn" id="testListAction">开始上传</button>
+                </div>
+                <br><br><br>
+                <br><br><br>
+                <h1 class="h2">Step2 查看结果</h1>
+                <br>
+                <!-- HTML代码 -->
+                <div id="train-accuracy"></div>
+                <br>
+                <div id="test-accuracy"></div>
+                <br>
+                <div id="confusion-matrix-container" style="text-align: center">
+                    <table id="confusion-matrix"></table>
+                </div>
+                <br>
+                <div id="image-container" style="font-size: 24px;font-weight: bold"></div>
+                <br>
+                <h1 class="h2">Step2 可视化结果</h1>
+                <br>
+
+                    <button id="my-button" style="display: none;">My Button</button>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- 参数输入 -->
+
+<script>
+    // 更新图像元素的函数，参数imageData是一个base64编码的图像数据字符串
+    function updateImage(imageData) {
+        // 创建一个img元素
+        var imgElement = document.createElement('img');
+        // 将图像数据添加到img元素的src属性中，以显示图像
+        imgElement.src = 'data:image/png;base64,' + imageData;
+        // 清空图像容器元素的内容
+        document.getElementById('image-container').innerHTML = '';
+        // 将更新后的img元素添加到图像容器元素中
+        document.getElementById('image-container').appendChild(imgElement);
+    }
+
+    function updateTrainAccuracy(train_accuracy) {
+        // 获取显示训练集精度的元素
+        const trainAccuracyElement = document.getElementById('train-accuracy');
+        // 更新元素的文本内容为传入的训练集精度值
+        trainAccuracyElement.style.fontSize = "24px";
+        trainAccuracyElement.style.fontWeight = "bold";
+        trainAccuracyElement.textContent = `训练准确率: ${train_accuracy.toFixed(2)}`;
+    }
+
+    function updateTestAccuracy(test_accuracy) {
+        // 获取显示测试集精度的元素
+        const testAccuracyElement = document.getElementById('test-accuracy');
+        // 更新元素的文本内容为传入的测试集精度值
+        testAccuracyElement.style.fontSize = "24px";
+        testAccuracyElement.style.fontWeight = "bold";
+        testAccuracyElement.textContent = `测试准确率: ${test_accuracy.toFixed(2)}`;
+    }
+
+    function updateConfusionMatrix(confusion_matrix) {
+        // 获取显示混淆矩阵的表格元素
+        const confusionMatrixElement = document.getElementById('confusion-matrix');
+        // 清空表格元素的内容
+        confusionMatrixElement.innerHTML = '';
+
+        // 创建表头行
+        const headerRow = document.createElement('tr');
+        const headerCell1 = document.createElement('th');
+        headerCell1.style.fontSize = '24px';
+        headerCell1.style.fontWeight = 'bold';
+        headerCell1.style.textAlign = 'center';   // 居中对齐
+        headerCell1.colSpan = confusion_matrix.length + 1;  // 设置合并单元格
+        headerCell1.textContent = '混淆矩阵';  // 设置标题内容
+        headerRow.appendChild(headerCell1);
+        confusionMatrixElement.appendChild(headerRow);
+
+        // 创建表头行
+        const labelRow = document.createElement('tr');
+        labelRow.appendChild(document.createElement('th'));
+        for (let i = 0; i < confusion_matrix.length; i++) {
+            const headerCell = document.createElement('th');
+            headerCell.textContent = i;
+            labelRow.appendChild(headerCell);
+        }
+        confusionMatrixElement.appendChild(labelRow);
+
+        // 创建表格主体
+        for (let i = 0; i < confusion_matrix.length; i++) {
+            const row = document.createElement('tr');
+            const rowHeaderCell = document.createElement('th');
+            rowHeaderCell.textContent = i;
+            row.appendChild(rowHeaderCell);
+            for (let j = 0; j < confusion_matrix.length; j++) {
+                const cell = document.createElement('td');
+                cell.textContent = confusion_matrix[i][j];
+                row.appendChild(cell);
+            }
+            confusionMatrixElement.appendChild(row);
+        }
+    }
+
+    function checkDuplicateKeys(obj) {
+        var keys = {};
+        for (var prop in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                if (prop in keys) {
+                    return true;
+                }
+                keys[prop] = true;
+            }
+        }
+        return false;
+    }
+
+    // 处理表单提交事件的函数，参数event是事件对象
+    function handleSubmit(event) {
+        // 阻止表单的默认提交行为
+        event.preventDefault();
+        // 获取表单元素
+        var formElement = event.target;
+        // 创建一个FormData对象，用于将表单数据编码为键值对字符串
+        var formData = new FormData(formElement);
+        // 发送HTTP请求，将FormData对象作为请求主体
+        fetch(formElement.action, {
+            method: formElement.method,
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (checkDuplicateKeys(data)) {
+                    console.log("Duplicate keys found!");
+                } else {
+                    console.log("No duplicate keys found.");
+                }
+                // 更新图像元素
+                updateImage(data.image_data);
+                updateTrainAccuracy(data.train_accuracy);
+                updateTestAccuracy(data.test_accuracy);
+                updateConfusionMatrix(data.confusion_matrix);
+            })
+            .catch(error => console.error(error));
+    }
+
+    // 获取表单元素，并监听提交事件
+    var formElement = document.querySelector('form');
+    formElement.addEventListener('submit', handleSubmit);
+</script>
+
+<script>
+    window.onload = function () {
+        var algorithms = document.getElementsByClassName('algorithm');
+        var _parameters = document.getElementsByClassName('_parameter');
+        algorithms[0].addEventListener('click', function () {
+            for (var j = 0; j < algorithms.length; j++) {
+                _parameters[j].style.display = 'none';
+            }
+            _parameters[0].style.display = 'block';
+        })
+        algorithms[1].addEventListener('click', function () {
+            for (var j = 0; j < algorithms.length; j++) {
+                _parameters[j].style.display = 'none';
+            }
+            _parameters[1].style.display = 'block';
+        })
+        algorithms[2].addEventListener('click', function () {
+            for (var j = 0; j < algorithms.length; j++) {
+                _parameters[j].style.display = 'none';
+            }
+            _parameters[2].style.display = 'block';
+        })
+        algorithms[3].addEventListener('click', function () {
+            for (var j = 0; j < algorithms.length; j++) {
+                _parameters[j].style.display = 'none';
+            }
+            _parameters[3].style.display = 'block';
+        })
+        algorithms[4].addEventListener('click', function () {
+            for (var j = 0; j < algorithms.length; j++) {
+                _parameters[j].style.display = 'none';
+            }
+            _parameters[4].style.display = 'block';
+        })
+        algorithms[5].addEventListener('click', function () {
+            for (var j = 0; j < algorithms.length; j++) {
+                _parameters[j].style.display = 'none';
+            }
+            _parameters[5].style.display = 'block';
+        })
+    }
+</script>
+<!-- 上传文件 -->
+<script src="../static/src/layui.js" src1="https://cdn.staticfile.org/layui/2.6.8/layui.js"></script>
+<script>
+    layui.use(['upload', 'element'], function () {
+        var $ = layui.$;
+        var upload = layui.upload;
+        var element = layui.element;
+
+        // 演示多文件列表 ---  本示例仅演示未开启 unified 属性的情况
+        var demoListView = $('#demoList');
+        var uploadListIns = upload.render({
+            elem: '#testList',
+            url: '/function',
+            accept: 'file',
+            multiple: true,
+            field: 'csvfile',
+            number: 3,
+            auto: false,
+            bindAction: '#testListAction',
+            size: 500000,
+            choose: function (obj) {
+                var files = this.files = obj.pushFile(); // 将每次选择的文件追加到文件队列
+                //读取本地文件
+                obj.preview(function (index, file, result) {
+                    var tr = $(['<tr id="upload-' + index + '">'
+                        , '<td>' + file.name + '</td>'
+                        , '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
+                        , '<td><div class="layui-progress" lay-filter="progress-' + index + '"><div class="layui-progress-bar" lay-percent=""></div></div></td>'
+                        , '<td>'
+                        , '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                        , '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                        , '</td>'
+                        , '</tr>'].join(''));
+
+                    //单个重传
+                    tr.find('.demo-reload').on('click', function () {
+                        obj.upload(index, file);
+                    });
+
+                    //删除
+                    var that = this;
+                    tr.find('.demo-delete').on('click', function () {
+                        console.log(files, index);
+                        delete files[index]; //删除对应的文件
+                        tr.remove();
+                        uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                    });
+
+                    demoListView.append(tr);
+
+                    element.render('progress');
+                });
+            },
+            done: function (res, index, upload) {
+                //if(res.code == 0){ //上传成功
+                var tr = demoListView.find('tr#upload-' + index)
+                    , tds = tr.children();
+                tds.eq(3).html(''); //清空操作
+                delete this.files[index]; //删除文件队列已经上传成功的文件
+                return;
+                //}
+                this.error(index, upload);
+            },
+            allDone: function (obj) {
+                console.log(obj)
+            },
+            error: function (index, upload) {
+                var tr = demoListView.find('tr#upload-' + index)
+                    , tds = tr.children();
+                tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+            },
+            progress: function (n, elem, e, index) {
+                console.log(n);
+                console.log(index);
+                element.progress('progress-' + index, n + '%'); //进度条
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

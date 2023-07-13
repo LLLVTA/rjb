@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>function</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no,maximum-scale=1">
+    <!-- <link rel="stylesheet" href="./css/matrix-style.css"> -->
+    <link rel="stylesheet" href="../static/CSS/style.css" />
+    <link rel="stylesheet" href="../static/src\css\layui.css" />
+    <script src="../static/js/index.js"></script>
+
+    <!-- 新 Bootstrap5 核心 CSS 文件 -->
+    <link rel="stylesheet" href="../static/CSS/bootstrap.min.css">
+    <!-- <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+    <!-- 上传文件 -->
+    <link rel="stylesheet" href="../static/src/css/layui.css">
+
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 80px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            z-index: 99;
+        }
+
+        @media (max-width: 767.98px) {
+            .sidebar {
+                top: 11.5rem;
+                padding: 0;
+            }
+        }
+
+        .navbar {
+            box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .1);
+        }
+
+        @media (min-width: 767.98px) {
+            .navbar {
+                top: 0;
+                position: sticky;
+                z-index: 999;
+            }
+        }
+
+        .sidebar .nav-link {
+            color: black;
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: black;
+        }
+
+        .ml-2 {
+            font-size: 20px;
+
+        }
+
+        #confirm-btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #confirm-btn:hover {
+            background-color: #3e8e41;
+        }
+
+        /* Add spacing between elements */
+        .h2 {
+            margin-top: 40px;
+        }
+
+        .modal-content {
+            margin-top: 20px;
+        }
+
+        .confirm-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        .confirm-button:hover {
+            background-color: #3e8e41;
+        }
+
+        select {
+            width: 90%;
+            box-sizing: border-box;
+        }
+
+        td input[type="text"] {
+            width: 90%;
+        }
+
+        .select-container {
+            position: relative;
+            width: 300px;
+            display: flex;
+            margin: 10px 0;
+            align-items: center;
+        }
+
+        .select-container select {
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            padding: 12px 32px 12px 16px;
+            width: 150%;
+            border: 2px solid #eee;
+            border-radius: 4px;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: transparent;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            cursor: pointer;
+            transition-duration: 0.3s;
+            flex: 1;
+        }
+
+        .select-container select:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.3);
+        }
+
+        /* 隐藏模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        /* 显示模态框 */
+        .modal.show {
+            display: block;
+        }
+
+        /* 模态框内容 */
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        /* 关闭按钮 */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body style="overflow-x:hidden">
+    <!-- 网页头部 -->
+    <header style="background-color: black;">
+        <a href="http://127.0.0.1:5000/index" style="text-decoration: none;">
+            <img src="../static/logo/logo.png" style="height: 80px; width: 200px;">
+        </a>
+    </header>
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span class="ml-2">选择模型</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="step2-link">
+                                <span class="ml-2">故障诊断</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
+                <h1 class="h2">上传训练集</h1>
+                <br>
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn layui-btn-normal" id="testList">选择CSV文件</button>
+                    <div class="layui-upload-list">
+                        <table class="layui-table">
+                            <thead>
+                                <th>文件名</th>
+                                <th>大小</th>
+                                <th>上传进度</th>
+                                <th>操作</th>
+                            </thead>
+                            <tbody id="demoList"></tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+                </div>
+                <br><br><br>
+                <h1 class="h2" id="step2">选择模型/算法</h1>
+                <div class="select-container">
+                    <select name="algorithm">
+                        <option value="">Please select an algorithm</option>
+                        <option value="lightgbm">LightGBM</option>
+                        <option value="knn">K-Nearest Neighbor</option>
+                        <option value="svm">Support Vector Machine</option>
+                    </select>
+                </div>
+                <!-- 按钮，用来打开模态框 -->
+                <button button class="confirm-button" id="modal-btn">查看更多详情</button>
+
+                <!-- 模态框 -->
+                <div id="modal" class="modal">
+                    <div class="modal-content">
+                        <!-- × 按钮，用来关闭模态框 -->
+                        <span class="close">&times;</span>
+
+                        <!-- 模态框内容 -->
+                        <h2>更多详情</h2>
+                        <table>
+                            <tr>
+                                <th>参数名称</th>
+                                <th>中文名</th>
+                                <th>默认值</th>
+                                <th>范围</th>
+                            </tr>
+                            <tr>
+                                <td>class_weight</td>
+                                <td>权值调整</td>
+                                <td>#</td>
+                                <td>#</td>
+                            </tr>
+                            <tr>
+                                <td>boosting_type</td>
+                                <td>提升类型</td>
+                                <td>'gbdt'</td>
+                                <td>'gbdt','dart','goss'</td>
+                            </tr>
+                            <tr>
+                                <td>max_depth</td>
+                                <td>最大深度</td>
+                                <td>2*x_+1 for x_ in range(10)-1</td>
+                                <td>大于等于-1的整数</td>
+                            </tr>
+                            <tr>
+                                <td>reg_alpha</td>
+                                <td>L1正则化系数</td>
+                                <td>0.0</td>
+                                <td>大于等于0的实数</td>
+                            </tr>
+                            <tr>
+                                <td>reg_lambda</td>
+                                <td>L2正则化系数</td>
+                                <td>0.0</td>
+                                <td>大于等于0的实数</td>
+                            </tr>
+                            <tr>
+                                <td>num_leaves</td>
+                                <td>叶节点数</td>
+                                <td>5*x_+1 for x_ in range(10)</td>
+                                <td>大于等于2的整数</td>
+                            </tr>
+                            <tr>
+                                <td>min_split_gain</td>
+                                <td>执行节点分裂的最小增益</td>
+                                <td>0</td>
+                                <td>#</td>
+                            </tr>
+                            <tr>
+                                <td>min_child_samples</td>
+                                <td>叶节点最小样本数</td>
+                                <td>20</td>
+                                <td>大于等于1的整数</td>
+                            </tr>
+                        </table>
+
+                        <!-- 确认按钮，用来关闭模态框 -->
+                        <button id="confirm-btn">确认</button>
+                    </div>
+                </div>
+                <br><br><br>
+                <h1 class="h2">Step3 参数输入</h1>
+                <br><br>
+                <div class="container">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">参数1</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
+                                placeholder="请输入0-1的数值" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">参数2</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
+                                placeholder="请输入0-1的数值" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">参数3</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
+                                placeholder="请输入0-1的数值" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">参数4</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
+                                placeholder="请输入0-1的数值" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="*">运行</button>
+                            <button class="layui-btn demo" test-active="test-form">保存模型</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <br><br><br>
+                <h1 class="h2">Step4 查看结果</h1>
+                <br>
+                <div id="heatmap-container" style="width: 600px;height: 600px"></div>
+                <div id="json_file" style="display: none;">
+                    <div class="layui-btn layui-btn-lg">下载结果</div>
+                </div>
+                <br><br><br>
+            </div>
+        </div>
+    </div>
+    <!-- 上传文件 -->
+    <script src="../static/src/layui.js" src1="https://cdn.staticfile.org/layui/2.6.8/layui.js"></script>
+    <script>
+        layui.use(['upload', 'element'], function () {
+            var $ = layui.$;
+            var upload = layui.upload;
+            var element = layui.element;
+
+            // 演示多文件列表 ---  本示例仅演示未开启 unified 属性的情况
+            var demoListView = $('#demoList');
+            var uploadListIns = upload.render({
+                elem: '#testList',
+                url: '/function',
+                accept: 'file',
+                exts: 'csv',
+                multiple: true,
+                field: 'csvfile',
+                number: 3,
+                auto: false,
+                bindAction: '#testListAction',
+                size: 500000,
+                choose: function (obj) {
+                    var files = this.files = obj.pushFile(); // 将每次选择的文件追加到文件队列
+                    //读取本地文件
+                    obj.preview(function (index, file, result) {
+                        var tr = $(['<tr id="upload-' + index + '">'
+                            , '<td>' + file.name + '</td>'
+                            , '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
+                            , '<td><div class="layui-progress" lay-filter="progress-' + index + '"><div class="layui-progress-bar" lay-percent=""></div></div></td>'
+                            , '<td>'
+                            , '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                            , '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                            , '</td>'
+                            , '</tr>'].join(''));
+
+                        //单个重传
+                        tr.find('.demo-reload').on('click', function () {
+                            obj.upload(index, file);
+                        });
+
+                        //删除
+                        var that = this;
+                        tr.find('.demo-delete').on('click', function () {
+                            console.log(files, index);
+                            delete files[index]; //删除对应的文件
+                            tr.remove();
+                            uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                        });
+
+                        demoListView.append(tr);
+
+                        element.render('progress');
+                    });
+                },
+                done: function (res, index, upload) {
+                    //if(res.code == 0){ //上传成功
+                    var tr = demoListView.find('tr#upload-' + index)
+                        , tds = tr.children();
+                    tds.eq(3).html(''); //清空操作
+                    delete this.files[index]; //删除文件队列已经上传成功的文件
+                    return;
+                    //}
+                    this.error(index, upload);
+                },
+                allDone: function (obj) {
+                    console.log(obj)
+                },
+                error: function (index, upload) {
+                    var tr = demoListView.find('tr#upload-' + index)
+                        , tds = tr.children();
+                    tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+                },
+                progress: function (n, elem, e, index) {
+                    console.log(n);
+                    console.log(index);
+                    element.progress('progress-' + index, n + '%'); //进度条
+                }
+            });
+        });
+    </script>
+
+    <!-- JavaScript 代码，用来控制模态框的显示和隐藏 -->
+    <script>
+        // 获取模态框元素和按钮元素
+        const modal = document.getElementById("modal");
+        const modalBtn = document.getElementById("modal-btn");
+        const closeBtn = document.getElementsByClassName("close")[0];
+        const confirmBtn = document.getElementById("confirm-btn");
+
+        // 当用户点击按钮时显示模态框
+        modalBtn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // 当用户点击×按钮或确认按钮时关闭模态框
+        closeBtn.onclick = function () {
+            modal.style.display = "none";
+        }
+        confirmBtn.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // 当用户点击模态框外部时关闭模态框
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+    <!-- 参数输入 -->
+    <script src="../static/dist/layui.js"></script>
+    <script>
+        console.log(layui.$);
+        //(function(){
+        layui.use(function () {
+            var $ = layui.jquery
+                , layer = layui.layer
+                , form = layui.form
+                , laypage = layui.laypage
+                , element = layui.element
+                , transfer = layui.transfer
+                , util = layui.util
+                , laydate = layui.laydate;
+
+            //layer.closeAll();
+            //触发事件
+            util.event('test-active', {
+                'test-form': function () {
+                    layer.open({
+                        type: 1
+                        , resize: false
+                        , content: ['<ul class="layui-form" style="margin: 10px;">'
+                            , '<li class="layui-form-item">'
+                            , '<label class="layui-form-label">名称</label>'
+                            , '<div class="layui-input-block">'
+                            , '<input class="layui-input" name="field1" lay-verify="required|title" lay-reqText="名称不能为空">'
+                            , '</div>'
+                            , '</li>'
+                            , '<li class="layui-form-item" style="text-align:center;">'
+                            , '<button type="submit" lay-submit lay-filter="*" class="layui-btn">保存</button>'
+                            , '</li>'
+                            , '</ul>'].join('')
+                        , success: function (layero) {
+                            layero.find('.layui-layer-content').css('overflow', 'visible');
+
+                        }
+                    });
+                }
+            });
+        });
+
+    //})();
+    </script>
+
+    <!-- 热力图 -->
+    <script>
+        // 监听表单提交事件
+        document.getElementById('upload-form').addEventListener('submit', function (event) {
+            // 阻止表单的默认提交行为
+            event.preventDefault();
+            // 创建 FormData 对象，将表单数据添加到其中
+            var formData = new FormData(event.target);
+            // 发送 AJAX 请求
+            $.ajax({
+                url: '/function',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+
+                    const result = []
+
+                    for (let i = response.confusion_matrix.length - 1; i >= 0; i--) {
+                        for (let j = 0; j < response.confusion_matrix[i].length; j++) {
+                            result.push({ x: j, y: i, value: response.confusion_matrix[i][j] });
+                        }
+                    }
+
+                    console.log(result);
+                    console.log(typeof result)
+
+                    console.log('success')
+                    // 打印混淆矩阵数据的类型
+                    console.log(typeof response.confusion_matrix)
+                    // 获取混淆矩阵数据
+                    var heatmapData = [];
+                    result.map(function (item) {
+                        heatmapData.push([item.x, item.y, item.value || '-']);
+                    });
+                    // 创建 ECharts 实例，并指定要显示图表的容器
+                    var heatmapChart = echarts.init(document.getElementById('heatmap-container'));
+                    console.log(heatmapChart)
+                    heatmapChart.setOption({
+                        tooltip: {
+                            position: 'top'
+                        },
+                        grid: {
+                            height: '50%',
+                            top: '10%'
+                        },
+                        xAxis: {
+                            name: 'Predicted labels',
+                            nameLocation: 'center',
+                            nameTextStyle: {
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                color: '#666',
+                                padding: 14,
+                            },
+                            type: 'category',
+                            data: response.predicted_labels,
+                        },
+                        yAxis: {
+                            type: 'category',
+                            data: response.true_labels,
+                            name: 'True labels',
+                            nameLocation: 'center',
+                            nameTextStyle: {
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                color: '#666',
+                                padding: 14,
+                            },
+                        },
+                        visualMap: {
+                            min: 0,
+                            max: 600,
+                            calculable: true,
+                            orient: 'horizontal',
+                            left: 'center',
+                            bottom: '15%',
+                            color: ['#08306B', '#F7FBFF'],
+                            textStyle: {
+                                color: '#000',
+                            },
+                        },
+                        series: [
+                            {
+                                name: 'Error',
+                                type: 'heatmap',
+                                data: heatmapData,
+                                label: {
+                                    show: true
+                                },
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 15,
+                                        shadowColor: 'rgba(0, 0, 0, 1)'
+                                    }
+                                }
+                            }
+                        ],
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('AJAX Error:');
+                    console.log(jqXHR);
+                    console.log(textStatus);
+                    console.log(errorThrown);
+                }
+            });
+        });
+    </script>
+
+    <!-- 故障检测和模型训练的区别 -->
+    <script>
+        var op = document.getElementsByClassName('nav-item');
+        var heatmap_container = document.getElementById('heatmap-container');
+        var json_file = document.getElementById('json_file');
+        op[0].addEventListener('click', function () {
+            json_file.style.display = 'none';
+            heatmap_container.style.display = 'block';
+        })
+        op[1].addEventListener('click', function () {
+            heatmap_container.style.display = 'none';
+            json_file.style.display = 'block';
+        })
+    </script>
+</body>

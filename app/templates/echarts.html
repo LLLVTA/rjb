@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Webpage</title>
+    <!-- 引入 ECharts 库 -->
+    <script src="https://cdn.staticfile.org/echarts/5.2.2/echarts.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 引入 ECharts 的主题样式 -->
+    <script src="../static/js/vintage.js"></script>
+</head>
+<body>
+<h1>Upload CSV File and Display Heatmap</h1>
+<!-- 表单，用于上传 CSV 文件 -->
+<form action="/function" id="upload-form" method="POST" enctype="multipart/form-data">
+    <input type="file" name="csvfile">
+    <input type="submit" value="Upload">
+</form>
+<!-- 用于展示热力图的容器 -->
+<div id="heatmap-container" style="width: 600px;height: 600px"></div>
+<script>
+    // 监听表单提交事件
+    document.getElementById('upload-form').addEventListener('submit', function (event) {
+        // 阻止表单的默认提交行为
+        event.preventDefault();
+        // 创建 FormData 对象，将表单数据添加到其中
+        var formData = new FormData(event.target);
+        // 发送 AJAX 请求
+        $.ajax({
+            url: '/function',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+
+                const result = []
+
+                for (let i = response.confusion_matrix.length - 1; i >= 0; i--) {
+                    for (let j = 0; j < response.confusion_matrix[i].length; j++) {
+                        result.push({x: j, y: i, value: response.confusion_matrix[i][j]});
+                    }
+                }
+
+                console.log(result);
+                console.log(typeof result)
+
+                console.log('success')
+                // 打印混淆矩阵数据的类型
+                console.log(typeof response.confusion_matrix)
+                // 获取混淆矩阵数据
+                var heatmapData = [];
+                result.map(function (item) {
+                    heatmapData.push([item.x, item.y, item.value || '-']);
+                });
+                // 创建 ECharts 实例，并指定要显示图表的容器
+                var heatmapChart = echarts.init(document.getElementById('heatmap-container'));
+                console.log(heatmapChart)
+                heatmapChart.setOption({
+                    tooltip: {
+                        position: 'top'
+                    },
+                    grid: {
+                        height: '50%',
+                        top: '10%'
+                    },
+                    xAxis: {
+                        name: 'Predicted labels',
+                        nameLocation: 'center',
+                        nameTextStyle: {
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: '#666',
+                            padding: 14,
+                        },
+                        type: 'category',
+                        data: response.predicted_labels,
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: response.true_labels,
+                        name: 'True labels',
+                        nameLocation: 'center',
+                        nameTextStyle: {
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: '#666',
+                            padding: 14,
+                        },
+                    },
+                    visualMap: {
+                        min: 0,
+                        max: 600,
+                        calculable: true,
+                        orient: 'horizontal',
+                        left: 'center',
+                        bottom: '15%',
+                        color: ['#08306B', '#F7FBFF'],
+                        textStyle: {
+                            color: '#000',
+                        },
+                    },
+                    series: [
+                        {
+                            name: 'Error',
+                            type: 'heatmap',
+                            data: heatmapData,
+                            label: {
+                                show: true
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 15,
+                                    shadowColor: 'rgba(0, 0, 0, 1)'
+                                }
+                            }
+                        }
+                    ],
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('AJAX Error:');
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    });
+</script>
+</body>
+</html>

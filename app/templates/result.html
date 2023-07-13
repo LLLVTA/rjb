@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>混淆矩阵</title>
+    <style>
+        #confusion-matrix-container {
+            width: 80%;
+            margin: 0 auto;
+            border: 1px solid black;
+            padding: 10px;
+            background-color: white;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 10px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+        }
+
+        th {
+            font-weight: bold;
+            background-color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <div id="confusion-matrix-container">
+        <table id="confusion-matrix"></table>
+    </div>
+    <script>
+        function updateConfusionMatrix(confusion_matrix) {
+            // 获取显示混淆矩阵的表格元素
+            const confusionMatrixElement = document.getElementById('confusion-matrix');
+            // 清空表格元素的内容
+            confusionMatrixElement.innerHTML = '';
+
+            // 创建表头行
+            const headerRow = document.createElement('tr');
+            const headerCell1 = document.createElement('th');
+            headerCell1.style.fontSize = '24px';
+            headerCell1.style.fontWeight = 'bold';
+            headerCell1.innerHTML = '混淆矩阵:';
+            headerRow.appendChild(headerCell1);
+            for (let i = 0; i < confusion_matrix.length; i++) {
+                const headerCell = document.createElement('th');
+                headerCell.textContent = i;
+                headerRow.appendChild(headerCell);
+            }
+            confusionMatrixElement.appendChild(headerRow);
+
+            // 创建表格主体
+            for (let i = 0; i < confusion_matrix.length; i++) {
+                const row = document.createElement('tr');
+                const rowHeaderCell = document.createElement('th');
+                rowHeaderCell.textContent = i;
+                row.appendChild(rowHeaderCell);
+                for (let j = 0; j < confusion_matrix.length; j++) {
+                    const cell = document.createElement('td');
+                    cell.textContent = confusion_matrix[i][j];
+                    row.appendChild(cell);
+                }
+                confusionMatrixElement.appendChild(row);
+            }
+        }
+
+        // 示例数据
+        const confusion_matrix = [
+            [10, 2, 3],
+            [1, 5, 0],
+            [2, 1, 8]
+        ];
+
+        // 更新混淆矩阵
+        updateConfusionMatrix(confusion_matrix);
+    </script>
+</body>
+</html>
