@@ -221,7 +221,7 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <span class="ml-2">选择模型</span>
+                                <span class="ml-2">模型训练</span>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -254,7 +254,6 @@
                 <h1 class="h2" id="step2">选择模型/算法</h1>
                 <div class="select-container">
                     <select name="algorithm">
-                        <option value="">Please select an algorithm</option>
                         <option value="lightgbm">LightGBM</option>
                         <option value="knn">K-Nearest Neighbor</option>
                         <option value="svm">Support Vector Machine</option>
@@ -340,7 +339,7 @@
                         <label class="layui-form-label">权值调整</label>
                         <div class="layui-input-block">
                             <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
-                                placeholder="" autocomplete="off" class="layui-input">
+                                placeholder="" autocomplete="off" value="balanced" lay-affix="clear" disabled class="layui-input">
                         </div>
                     </div>
 
@@ -348,7 +347,7 @@
                         <label class="layui-form-label">提升类型</label>
                         <div class="layui-input-block">
                             <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
-                                placeholder="请输入gbdt或dart或goss" autocomplete="off" class="layui-input">
+                                placeholder="请输入gbdt或dart或goss或rf" autocomplete="off" class="layui-input">
                         </div>
                     </div>
 
@@ -700,5 +699,8 @@
             heatmap_container.style.display = 'none';
             json_file.style.display = 'block';
         })
+    </script>
+    <script>
+        
     </script>
 </body>
