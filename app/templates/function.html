@@ -197,6 +197,13 @@
             text-decoration: none;
             cursor: pointer;
         }
+        .layui-input {
+            width: 900px;
+        }
+        .layui-form-label {
+            width: 200px;
+            text-align: center;
+        }
     </style>
 </head>
 
@@ -330,34 +337,66 @@
                 <br><br>
                 <div class="container">
                     <div class="layui-form-item">
-                        <label class="layui-form-label">参数1</label>
+                        <label class="layui-form-label">权值调整</label>
                         <div class="layui-input-block">
                             <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
-                                placeholder="请输入0-1的数值" autocomplete="off" class="layui-input">
+                                placeholder="" autocomplete="off" class="layui-input">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">参数2</label>
+                        <label class="layui-form-label">提升类型</label>
                         <div class="layui-input-block">
                             <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
-                                placeholder="请输入0-1的数值" autocomplete="off" class="layui-input">
+                                placeholder="请输入gbdt或dart或goss" autocomplete="off" class="layui-input">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">参数3</label>
+                        <label class="layui-form-label">最大深度</label>
                         <div class="layui-input-block">
                             <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
-                                placeholder="请输入0-1的数值" autocomplete="off" class="layui-input">
+                                placeholder=请输入大于等于-1的整数" autocomplete="off" class="layui-input">
                         </div>
                     </div>
 
                     <div class="layui-form-item">
-                        <label class="layui-form-label">参数4</label>
+                        <label class="layui-form-label">L1正则化系数</label>
                         <div class="layui-input-block">
                             <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
-                                placeholder="请输入0-1的数值" autocomplete="off" class="layui-input">
+                                placeholder="请输入大于等于0的实数" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">L2正则化系数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
+                                placeholder="请输入大于等于0的实数" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">叶节点数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
+                                placeholder="请输入大于等于2的整数" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">执行节点分裂的最小增益</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
+                                placeholder="默认值为0" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">叶节点最小样本数</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required|number" lay-reqText="参数不能为空" required
+                                placeholder="请输入大于等于1的整数" autocomplete="off" class="layui-input">
                         </div>
                     </div>
 
@@ -367,6 +406,7 @@
                             <button class="layui-btn demo" test-active="test-form">保存模型</button>
                         </div>
                     </div>
+
                 </div>
 
 
